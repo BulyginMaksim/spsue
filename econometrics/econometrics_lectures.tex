@@ -1722,7 +1722,127 @@
 	Суммы квадратов при выполнении нулевой гипотезы $H_0$:
 	$$SS_\text{ост} = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = 
 	\sum_{i=1}^{n} (y_i - b_0)^2 =  \sum_{i=1}^{n} (y_i - (\overline{y} - b_1 \cdot \overline{x}))^2 = \sum_{i=1}^{n} (y_i - \overline{y})^2 =
-	SS_\text{общ}$$
+	SS_\text{общ}$$	
+	$$SS_\text{общ} = \sum_{i=1}^{n} (\hat{y}_i - \overline{y})^2 = 
+	\sum_{i=1}^{n} (b_0 - \overline{y})^2 = \sum_{i=1}^{n} (\overline{y} - \overline{y})^2 = 0$$
+	
+	Если $H_0: b_1 = b_2 = \cdots = b_p = 0$, то
+	$$\dfrac{SS_\text{ост}}{\sigma^2_\varepsilon} \sim \chi^2(n-m-1)$$
+	$$\dfrac{SS_\text{факт}}{\sigma^2_\varepsilon} \sim \chi^2(m)$$
+	
+	Тогда:
+	$$\dfrac{SS_\text{факт}}{\sigma^2_\varepsilon \cdot m} \big/ \dfrac{SS_\text{ост}}{\sigma^2_\varepsilon \cdot (n-m-1)} =
+	\dfrac{SS_\text{факт} \cdot (n-m-1)}{SS_\text{ост}\cdot m} = 
+	\dfrac{SS_\text{факт}}{SS_\text{ост}} \cdot \dfrac{n-m-1}{n} \sim F(m, n-m-1)$$
+	
+	Критерий Фишера:
+	$$F = \dfrac{DS_\text{факт}}{DS_\text{ост}} = 
+	\dfrac{SS_\text{факт} \cdot (n-m-1)}{SS_\text{ост}\cdot m} = 
+	\dfrac{SS_\text{факт}}{SS_\text{ост}} \cdot \dfrac{n-m-1}{n}$$
+	
+	Если нулевая гипотеза выполняется, то $F$-статистика имеет распределение Фишера, поэтому
+	в качестве табличного значения мы берем $F_\text{табл}(\alpha;m;n-m-1)$ и смотрим, насколько полученное распределение похоже на распределение Фишера.
+	
+	Плотность распределения Фишера при степенях свободы $(m=1,n-m-1=20)$:
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.3\linewidth]{pics/screenshot052}
+		\label{fig:screenshot052}
+	\end{figure}
+	
+	Плотность распределения Фишера при степенях свободы $(m=3,n-m-1=20)$:
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.35\linewidth]{pics/screenshot053}
+		\label{fig:screenshot053}
+	\end{figure}
+
+	Плотность распределения Фишера при степенях свободы $(m=18,n-m-1=20)$:
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.35\linewidth]{pics/screenshot054}
+		\label{fig:screenshot054}
+	\end{figure}
+	
+	Так как справедливы следующие выражения:
+	$$R^2 = \dfrac{SS_\text{факт}}{SS_\text{общ}} = 1 - \dfrac{SS_\text{ост}}{SS_\text{общ}}$$
+	$$SS_\text{факт} = R^2 \cdot SS_\text{общ}$$
+	$$SS_\text{ост} = (1-R^2) \cdot SS_\text{общ}$$
+	
+	То, подставляя эти выражения в формулу $F$-статистики, получаем, что:
+	
+	$$F = \dfrac{R^2 \cdot SS_\text{общ}}{(1-R^2) \cdot SS_\text{общ}} \cdot \dfrac{n-m-1}{m}$$
+	$$F = \dfrac{R^2}{1-R^2} \cdot \dfrac{n-m-1}{m}$$
+	
+	Таким образом, если $b_1 = b_2 = \cdots = b_p = 0$, то $y = b_0 + 0 \cdot x_1 + 
+	\cdots 0 \cdot x_p + \varepsilon = b_0 + \varepsilon$ (то есть уравнение выглядит как стационарный ряд, незначимо влияние $x$ на $y$). Тогда:
+	$$R^2 = \dfrac{\sum\limits_{i=1}^n(\hat{y}_i - \overline{y})^2}
+	{\sum\limits_{i=1}^n(y_i - \overline{y})^2} = 
+	\dfrac{\sum\limits_{i=1}^n(b_0 - b_0)^2}
+	{\sum\limits_{i=1}^n(y_i - \overline{y})^2} = 0$$
+	
+	То есть, можно сказать, что нулевая гипотеза о равенстве в истинной модели всех параметров нулю эквивалентна нулевой гипотезе о незнаимости коэффициента детерминации:
+	$$H_0: b_1 = \cdots = b_p = 0 \Longleftrightarrow
+	 H_0: R^2 = 0$$
+	 
+	 Для $y = \hat{b}_0 + \hat{b}_1 \cdot x + \hat{\varepsilon}$:
+	 $$t_{b_1} = \dfrac{\hat{b}_1}{se(b_1)}$$
+	 
+	 Так как
+	 $$se(b_1) = \dfrac{SS_\text{ост}}{(n-2) \cdot \sum\limits_{i=1}^{n}(x_i - \overline{x})^2}$$
+	 то:
+	 $$t_{b_1}^2 = \dfrac{\hat{b}_1^2 \cdot (n-2) \cdot \sum\limits_{i=1}^{n}(x_i - \overline{x})^2}{SS_\text{ост}} =  
+	 \dfrac{\hat{b}_1^2 \cdot (n-2) \cdot \sigma^2_x \cdot n}{SS_\text{ост}}$$
+	 
+	 Также, мы знаем, что:
+	 $$\hat{r} = \hat{b}_1 \cdot \dfrac{\sigma_x}{\sigma_y}, \;\;\; \hat{b}_1 = \hat{r}
+	  \cdot \dfrac{\sigma_y}{\sigma_x}$$
+	  
+	 Откуда, подставляя $\hat{b}_1$, получим
+	 $$t_{b_1}^2 = 
+	 \dfrac{\hat{r}^2 \cdot \sigma_y^2  \cdot (n-2) \cdot \sigma^2_x \cdot n}
+	 {\sigma^2_x \cdot SS_\text{ост}} = 
+	 \dfrac{\hat{r}^2 \cdot \sigma_y^2  \cdot (n-2)  \cdot n}
+	 {SS_\text{ост}} = 
+	 \dfrac{R^2 \cdot \sigma_y^2  \cdot (n-2)  \cdot n}
+	 {SS_\text{ост}}  = \dfrac{SS_\text{факт} \cdot \sigma_y^2  \cdot (n-2)  \cdot n}
+	 {SS_\text{общ} \cdot SS_\text{ост}} =$$
+	 $$ =  \dfrac{SS_\text{факт} \cdot \sigma_y^2  \cdot (n-2)  \cdot n}
+	 {\sigma^2_y \cdot n \cdot SS_\text{ост}} = 
+	 \dfrac{SS_\text{факт} \cdot (n-2) }
+	 {SS_\text{ост}}  = \dfrac{SS_\text{факт}}{SS_\text{ост}} \cdot \dfrac{n - 1 - 1}{1} = F$$
+	 
+	 \subsection{Последствия неправильной спецификации модели}
+	Спецификация модели предполагает:
+	\begin{enumerate}
+		\item Выбор независимых переменных;
+		\item Выбор функциональной формы модели.
+	\end{enumerate}
+	
+	Каковы последствия, если функциональная форма не соответствует реальному экономическому явлению? Будет:
+	\begin{enumerate}
+		\item Ошибки интерпретации и прогнозирования;
+		\item Нарушения требований к случайным остаткам;
+		\item Недостоверность оценок параметров.
+	\end{enumerate}
+	
+	Каковы последствия, если будет 
+	несоответствие состава независимых переменных <<реальной>> модели:
+	\begin{enumerate}
+		\item Невключение существенных переменных;
+		\item Включение несущественных переменных.
+	\end{enumerate}
+	
+	Начнем рассматривать вопрос со случая невключения существенных переменных.
+	<<Реальная>> модель:
+	$$y = b_0 + b_1 \cdot x_1 + \cdots + a_1 \cdot z_1 + \cdots + \varepsilon$$
+	$$Y = X \cdot B + Z \cdot A + E$$
+	
+	Построена модель:
+	$$y = \hat{b}_0 + \hat{b}_1 \cdot x_1 + \cdots + \hat{\varepsilon}$$
+	$$Y = X \cdot \hat{B} + \hat{E}$$
+	
+	
 	
 	
 \end{document}
