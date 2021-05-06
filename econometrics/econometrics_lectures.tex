@@ -1842,7 +1842,131 @@
 	$$y = \hat{b}_0 + \hat{b}_1 \cdot x_1 + \cdots + \hat{\varepsilon}$$
 	$$Y = X \cdot \hat{B} + \hat{E}$$
 	
-	
-	
-	
+	Получаем МНК-оценку параметров коэффициентов <<неверной>> модели:
+	$$\hat{B} = (X^T \cdot X)^{-1} \cdot X^T \cdot Y =
+	(X^T \cdot X)^{-1} \cdot X^T \cdot (X \cdot B + Z \cdot A + E)$$
+	$$M\hat{B}= B + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot MA + 0 = 
+	 B + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot A$$
+	 
+	 Поскольку $M\hat{B}= B + \cdots$, то оценка коэффициентов является смещенной, если 
+	 $(X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot A \not = 0$.
+	 
+	 Оценка $\hat{B}$ несмещена, если:
+	 \begin{enumerate}
+	 	\item $Z = 0$ (то есть <<реальная>> модель соответствовала построенной)
+	 	\item $X^T \cdot Z = 0$
+	 \end{enumerate}
+     
+     $$D\hat{B}= \sigma^2_{\hat{B}} = ?$$
+     $$cov(\hat{B}) = M \left((\hat{B} - M\hat{B}) \cdot (\hat{B} - M\hat{B})^T \right)$$
+     $$\hat{B}- M\hat{B} = (X^T \cdot X)^{-1} \cdot X^T \cdot (X \cdot B + Z \cdot A + E) -
+     B - (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot A=$$
+     $$ = (X^T \cdot X)^{-1} \cdot X^T \cdot X \cdot B +  (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot A +
+      (X^T \cdot X)^{-1} \cdot X^T \cdot E   -
+      B - (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot A = $$
+      $$ = (X^T \cdot X)^{-1} \cdot X^T \cdot E$$
+      
+      Тогда, подставив $\hat{B}- M\hat{B}$, получим, что:
+      $$cov(\hat{B}) = M \left((\hat{B} - M\hat{B}) \cdot (\hat{B} - M\hat{B})^T \right)=
+      M \left(((X^T \cdot X)^{-1} \cdot X^T \cdot E) \cdot ((X^T \cdot X)^{-1} \cdot X^T \cdot E)^T \right) = $$
+      $$ = (X^T \cdot X)^{-1} \cdot M(E\cdot E^T) = (X^T \cdot X)^{-1} \cdot\sigma^2_\varepsilon$$
+      
+      Нужно изучить поведение дисперсии случайных остатков построенной модели, поэтому посмотрим на:
+      $$\hat{E}= Y - X \cdot \hat{B} = Y - X \cdot (X^T \cdot X)^{-1} \cdot X^T \cdot Y =
+      (I - X \cdot (X^T \cdot X)^{-1} \cdot X^T) \cdot Y $$
+      
+      Положим $I - X \cdot (X^T \cdot X)^{-1} \cdot X^T \equiv S$. Можно показать, что такая матрица $S$
+      является симметричной (то есть $S^T = S$) и идемпотентной (то есть $S^2 = S$). Также, она
+      обладает другим свойством - произведение матрицы $S$ на $X$ равно нулевой матрице:
+      $$S \cdot X = X - X \cdot (X^T \cdot X)^{-1} \cdot X^T \cdot X = X - X = 0$$
+      
+      Тогда, получаем, что:
+      $$\hat{E}= S \cdot Y$$
+      $$M(\hat{E}^T \cdot \hat{E}) = M(Y^T \cdot S^T \cdot S \cdot Y) = 
+      M(Y^T \cdot S \cdot S \cdot Y) = M(Y^T \cdot S^2 \cdot Y) =
+      M(Y^T \cdot S \cdot Y) =$$
+      $$ = M\left((X\cdot B + Z \cdot A + E)^T \cdot S \cdot(X\cdot B + Z \cdot A + E) \right) =$$
+      $$ = M(B^T \cdot X^T \cdot S \cdot X \cdot B + B^T \cdot X^T \cdot S \cdot Z \cdot A + 
+      B^T \cdot X^T \cdot S \cdot E +  A^T \cdot Z^T \cdot S \cdot X \cdot B +$$
+      $$ + A^T \cdot Z^T \cdot S \cdot Z \cdot A + A^T \cdot Z^T \cdot S \cdot E +
+      E^T \cdot S \cdot X \cdot B + E^T \cdot S \cdot Z \cdot A +
+      E^T \cdot S \cdot E) =$$
+      Поскольку $S \cdot X = 0$, то выражение упрощается:
+      $$M(\hat{E}^T \cdot \hat{E}) = 
+      M(A^T \cdot Z^T \cdot S \cdot Z \cdot A + A^T \cdot Z^T \cdot S \cdot E +
+      E^T \cdot S \cdot Z \cdot A + E^T \cdot S \cdot E) =$$
+      $$ = M(A^T \cdot Z^T \cdot S \cdot Z \cdot A + E^T \cdot S \cdot E) = 
+      M(E^T \cdot S \cdot E) + M(A^T \cdot Z^T \cdot S \cdot Z \cdot A)$$
+      
+      Положим $S \equiv I - X \cdot (X^T \cdot X)^{-1} \cdot X^T \equiv I - C$, тогда:
+      $$M(\hat{E}^T \cdot \hat{E}) = M(\hat{E}^T \cdot I \cdot \hat{E}) - 
+      M(\hat{E}^T \cdot C \cdot \hat{E}) + M(A^T \cdot Z^T \cdot S \cdot Z \cdot A)$$
+      
+      Преобразования с  $M\big(\hat{E}^T \cdot I \cdot \hat{E}\big)$ и $M(\hat{E}^T \cdot C \cdot \hat{E})$ были
+      рассмотрены в вопросе 2.7, поэтому, опустив преобразования из вопроса 2.7, мы можем записать:
+      $$M(\hat{E}^T \cdot \hat{E}) = n \cdot \sigma^2_\varepsilon - 
+      \sigma^2_\varepsilon \cdot (m + 1 ) + A^T \cdot Z^T \cdot S \cdot Z \cdot A = 
+      \sigma^2_\varepsilon \cdot (n - m -1) + A^T \cdot Z^T \cdot S \cdot Z \cdot A  = SS_\text{ост}$$
+      
+      Тогда:
+      $$\hat{\sigma}^2_\varepsilon = \dfrac{SS_\text{ост}}{n - m - 1} - \dfrac{1}{n - m - 1} \cdot 
+      A^T \cdot Z^T \cdot S \cdot Z \cdot A$$
+      
+      Мы не знаем $A$ и $Z$, поэтому для полученной модели получаем следующую оценку дисперсии случайных
+      остатков:
+      $$\hat{\sigma}^2_\varepsilon = \dfrac{SS_\text{ост}}{n - m - 1}$$
+      
+      Нужно понять, насколько неверная получилась оценка дисперсии случайных остатков.
+      
+      Для <<реальной>> моедли матрица независимых переменных $(X\;Z)$ имеет вид:
+      
+      \begin{equation*}
+      	X \; Z = \left(
+      	\begin{array}{ccccc}
+      		1 & x_{11} & \ldots & z_{11} & \ldots\\
+      		1 & x_{12} & \ldots & z_{12} & \ldots\\
+      		\vdots & \vdots & \ddots & \vdots & \vdots\\
+      		1 & x_{1n} & \ldots & z_{1n} & \ldots
+      	\end{array}
+      	\right)
+      \end{equation*}
+      
+      Оценки коэффициентов <<реальной модели>>:
+      \begin{equation*}
+      	\begin{bmatrix}
+      		\hat{B}^{*}\\
+      		\hat{A}
+      	\end{bmatrix} =
+      	\begin{pmatrix}
+      		\hat{b}_0^{*}\\
+      		\hat{b}_1^{*}\\
+      		\vdots\\
+      		\hat{a}_0^{*}\\
+      		\hat{a}_1^{*}\\
+      		\vdots
+      	\end{pmatrix}
+      \end{equation*}
+      Матрица ковариации оценок коэффициентов <<реальной>> модели имеет вид:
+      
+      $$cov\begin{bmatrix}
+      	\hat{B}^{*}\\
+      	\hat{A}
+      \end{bmatrix} = 
+	  \left(\begin{bmatrix}
+	      X \; Z
+	  \end{bmatrix}^T \cdot 
+	\begin{bmatrix}
+	  X \; Z
+	\end{bmatrix}\right)^{-1} \cdot \sigma^2_\varepsilon =
+      \left(\begin{bmatrix}
+      	X\\
+      	Z
+      \end{bmatrix} \cdot\begin{bmatrix}
+      X \; Z
+  \end{bmatrix}\right)^{-1} \cdot \sigma^2_\varepsilon = 
+      \begin{bmatrix}
+      	X^T \cdot X & X^T \cdot Z \\
+      	Z^T \cdot X & Z^T \cdot Z
+      \end{bmatrix}^{-1} \cdot \sigma^2_\varepsilon$$
+      
 \end{document}
