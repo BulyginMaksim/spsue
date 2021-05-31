@@ -1,5 +1,5 @@
 \documentclass[reqno]{article}
-
+\usepackage{cmap}
 \usepackage{fullpage}
 \usepackage{eufrak}
 \usepackage{listings}
@@ -1723,7 +1723,7 @@
 	$$SS_\text{ост} = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = 
 	\sum_{i=1}^{n} (y_i - b_0)^2 =  \sum_{i=1}^{n} (y_i - (\overline{y} - b_1 \cdot \overline{x}))^2 = \sum_{i=1}^{n} (y_i - \overline{y})^2 =
 	SS_\text{общ}$$	
-	$$SS_\text{общ} = \sum_{i=1}^{n} (\hat{y}_i - \overline{y})^2 = 
+	$$SS_\text{факт} = \sum_{i=1}^{n} (\hat{y}_i - \overline{y})^2 = 
 	\sum_{i=1}^{n} (b_0 - \overline{y})^2 = \sum_{i=1}^{n} (\overline{y} - \overline{y})^2 = 0$$
 	
 	Если $H_0: b_1 = b_2 = \cdots = b_p = 0$, то
@@ -1918,7 +1918,7 @@
       
       Нужно понять, насколько неверная получилась оценка дисперсии случайных остатков.
       
-      Для <<реальной>> моедли матрица независимых переменных $(X\;Z)$ имеет вид:
+      Для <<реальной>> модели матрица независимых переменных $(X\;Z)$ имеет вид:
       
       \begin{equation*}
       	X \; Z = \left(
@@ -1959,8 +1959,8 @@
 	  X \; Z
 	\end{bmatrix}\right)^{-1} \cdot \sigma^2_\varepsilon =
       \left(\begin{bmatrix}
-      	X\\
-      	Z
+      	X^T\\
+      	Z^T
       \end{bmatrix} \cdot\begin{bmatrix}
       X \; Z
   \end{bmatrix}\right)^{-1} \cdot \sigma^2_\varepsilon = 
@@ -1969,4 +1969,335 @@
       	Z^T \cdot X & Z^T \cdot Z
       \end{bmatrix}^{-1} \cdot \sigma^2_\varepsilon$$
       
+      Поскольку мы строили модель, оценивая $\hat{B}^*$, то в $cov\begin{bmatrix}
+      	\hat{B}^{*}\\
+      	\hat{A}
+      \end{bmatrix}$ нас интересует блок матрицы с $\hat{B}^*$.
+  
+      По правилу обращения блочных матриц:
+      $$cov(\hat{B}^*) = (X^T \cdot X - X^T \cdot Z \cdot (Z^T\cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} \cdot 
+      \sigma^2_\varepsilon$$
+      
+      Чтобы избавиться от $-1$ степени матрицы, появляющейся в разложении
+      $cov(\hat{B}^*)$, рассмотрим обратные матрицы ковариаций:
+      $$(cov(\hat{B}))^{-1} - (cov(\hat{B}^*))^{-1} = 
+      ((X^T \cdot X)^{-1} \cdot \sigma^2_\varepsilon)^{-1} - \left(
+       (X^T \cdot X - X^T \cdot Z \cdot (Z^T\cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} \cdot 
+      \sigma^2_\varepsilon
+      \right)^{-1}=$$
+      $$ = \dfrac{1}{\sigma^2_\varepsilon} (X^T \cdot X - X^T \cdot X + X^T \cdot Z \cdot (Z^T \cdot Z)^{-1}
+      \cdot Z^T \cdot X) =
+      \dfrac{1}{\sigma^2_\varepsilon} (X^T \cdot Z \cdot (Z^T \cdot Z)^{-1}
+      \cdot Z^T \cdot X) \ge 0$$
+      
+      Таким образом, ковариация <<реальной модели>> больше, чем ковариация <<короткой>> модели, при условии,
+      если мы знаем истинную дисперсию случайных остатков.
+      
+      Невключение существенной переменной:
+      \begin{enumerate}
+      	\item Оценки параметров смещены;
+      	\item Оценка дисперсии случайных остатков смещена;
+      	\item Дисперсии оценок параметров <<короткой>> модели меньше, чем дисперсии оценок 
+      	параметров <<реальной>> модели.
+      \end{enumerate}
+      
+      
+      Второй случай -- наоборот, включение несущественных переменных.
+      
+      <<Реальная модель>>:
+      $$y = b_0 + b_1 \cdot x_1 + \cdots  + \varepsilon$$
+      $$Y = X \cdot B + E$$
+      
+      Построена модель:
+      $$y = \hat{b}_0 + \hat{b}_1 \cdot x_1 + \cdots + \hat{a}_1 \cdot z_1 + \cdots + \hat{\varepsilon}$$
+      $$Y = X \cdot \hat{B} + Z \cdot \hat{A} + \hat{E} $$
+      
+      МНК-оценка:
+      $$\begin{bmatrix}
+      	\hat{B}\\
+      	\hat{A}
+      \end{bmatrix} = \left(\begin{bmatrix}
+      X \; Z
+  \end{bmatrix}^T \cdot \begin{bmatrix}
+  X \; Z
+\end{bmatrix}\right)^{-1} \cdot \begin{bmatrix}
+X \; Z
+\end{bmatrix}^T \cdot Y = \left(\begin{bmatrix}
+X \; Z
+\end{bmatrix}^T \cdot \begin{bmatrix}
+X \; Z
+\end{bmatrix}\right)^{-1} \cdot \begin{bmatrix}
+X \; Z
+\end{bmatrix}^T \cdot (X \cdot B + E)$$
+
+$$\begin{bmatrix}
+	\hat{B}\\
+	\hat{A}
+\end{bmatrix} = 
+\begin{pmatrix}
+X^T \cdot X & X^T \cdot Z \\
+Z^T \cdot X & Z^T \cdot Z
+\end{pmatrix}^{-1} \cdot 
+\begin{pmatrix}
+X^T\\
+Z^T
+\end{pmatrix} \cdot Y$$
+
+Пусть:
+$$\begin{pmatrix}
+	X^T \cdot X & X^T \cdot Z \\
+	Z^T \cdot X & Z^T \cdot Z
+\end{pmatrix}^{-1} = 
+\begin{pmatrix}
+	L & D \\
+	E & F
+\end{pmatrix}$$
+
+Тогда:
+$$\hat{B}= (L \cdot X^T + D \cdot Z^T ) \cdot Y$$
+
+Нужно выразить $L, D$: 
+$$L = (X^T \cdot X - X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1}$$
+$$D = -L \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1}$$
+
+Еще раз рассмотрим $L$:
+$$L = (X^T \cdot X - X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} = 
+(X^T \cdot (I - Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T) \cdot X)^{-1}$$
+
+Положим $S_z$ (матрицу $S_z$  является идемпотентной и симметричной):
+$$S_z \equiv I - Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T$$
+$$L = (X^T \cdot S_Z \cdot X)^{-1}$$
+
+Тогда рассмотрим матрицу $D$:
+$$D = -(X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1}$$
+
+Подставим $L, D$ в вектор $\hat{B}$:
+$$\hat{B}= (L \cdot X^T + D \cdot Z^T ) \cdot Y = 
+((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T -(X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T ) \cdot Y = $$
+$$=((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot (I - Z\cdot(Z^T \cdot Z)^{-1} \cdot Z^T)\cdot Y) =
+((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot Y)$$
+
+Найдем математеское ожидание ветора $\hat{B}$:
+$$M\hat{B} = M \left(((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot Y)\right) = 
+M \left(((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot (X \cdot B + E))\right) = $$
+$$ = M \left(((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot X \cdot B)\right) + 
+M \left(((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E)\right) = $$
+$$ = ((X^T \cdot S_Z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot X) \cdot MB + 0 = 
+ I \cdot B = B$$
+
+
+$$cov(\hat{B}) = M \left( (\hat{B} - M\hat{B}) \cdot (\hat{B} - M\hat{B})^T \right)$$
+
+Рассмотрим $\hat{B}- M\hat{B}$:
+$$\hat{B}- M\hat{B} = ((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot X \cdot B) +
+((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E) - B$$
+$$cov(\hat{B}) = M \left( (\hat{B} - M\hat{B}) \cdot (\hat{B} - M\hat{B})^T \right)$$
+
+Рассмотрим $ \hat{B}- M\hat{B}$:
+$$ \hat{B}- M\hat{B} = \left((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot X \cdot B \right)
++ \left((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E \right) - B$$
+
+Тогда:
+$$cov(\hat{B}) = M \left(
+((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E) \cdot 
+((X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E)^T \right) =$$ 
+$$ = M \left(
+(X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot E \cdot E^T 
+\cdot S_z \cdot X \cdot (X^T \cdot S_z \cdot X)^{-1} \right)= $$
+$$= \sigma^2_\varepsilon \cdot (X^T \cdot S_z \cdot X)^{-1} \cdot X^T \cdot S_z \cdot S_z \cdot X
+ \cdot (X^T \cdot S_z \cdot X)^{-1} = \sigma^2 _\varepsilon \cdot (X^T \cdot S_z \cdot X)^{-1}$$
+
+Мы будем оценивать дисперсии по формуле $cov(\hat{B}) = \sigma^2 _\varepsilon \cdot (X^T \cdot S_z \cdot X)^{-1}$. Если бы была истинная модель, то в формуле бы не было элемента $S_z$. Нужно понять, как будут соотноситься две оценки для истинной и полученной модели. Для этого проведем ряд преобразований:
+$$cov(\hat{B}) = \sigma^2 _\varepsilon \cdot (X^T \cdot S_z \cdot X)^{-1}
+= \sigma^2 _\varepsilon \cdot (X^T \cdot (I - Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T) \cdot X)^{-1} = $$
+$$=
+\sigma^2 _\varepsilon \cdot (X^T \cdot X - X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} =$$ $$=\sigma^2 _\varepsilon \cdot (X^T \cdot X - I \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1}= $$
+$$=\sigma^2 _\varepsilon \cdot (X^T \cdot X - X^T \cdot X \cdot (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} =$$
+$$=\sigma^2 _\varepsilon \cdot (I - (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} \cdot (X^T \cdot X)^{-1}= \cdots$$
+
+Имеет место алгебраическое тождество:
+$$(I + A \cdot B)^{-1} = I - A \cdot (I + B \cdot A)^{-1} \cdot B$$
+
+Тогда:
+$$cov(\hat{B}) =\sigma^2 _\varepsilon \cdot 
+(I - (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X)^{-1} 
+\cdot (X^T \cdot X)^{-1} =$$
+$$=\sigma^2 _\varepsilon \cdot (I + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot
+(I - (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X \cdot (X^T \cdot X)^{-1} \cdot X^T \cdot Z)^{-1}
+\cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X) \cdot (X^T \cdot X)^{-1} = $$
+$$ = \sigma^2 _\varepsilon \cdot (I + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot
+((Z^T \cdot Z)^{-1} \cdot Z^T \cdot Z - (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X \cdot (X^T \cdot X)^{-1}
+\cdot X^T \cdot Z)^{-1} \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X \cdot (X^T \cdot X)^{-1} = $$
+$$ = \sigma^2 _\varepsilon \cdot (I + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot
+(Z^T \cdot Z - Z^T \cdot X \cdot(X^T \cdot X)^{-1} \cdot X^T \cdot Z)^{-1} 
+\cdot Z^T \cdot Z \cdot (Z^T \cdot Z)^{-1} \cdot Z^T \cdot X) \cdot (X^T \cdot X)^{-1} = $$
+$$ = \sigma^2 _\varepsilon \cdot (I + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot
+(Z^T \cdot (I - X \cdot (X^T \cdot X)^{-1} \cdot X^T) \cdot Z)^{-1} 
+\cdot Z^T \cdot X) \cdot (X^T \cdot X)^{-1} = \cdots$$
+
+Вспоминаем, что $I - X \cdot (X^T \cdot X)^{-1} \cdot X^T \equiv S$. Тогда имеем:
+$$cov(\hat{B}) = 
+\sigma^2 _\varepsilon \cdot (I + (X^T \cdot X)^{-1} \cdot X^T \cdot Z \cdot
+(Z^T \cdot S \cdot Z)^{-1} \cdot Z^T \cdot X) \cdot (X^T \cdot X)^{-1} = $$
+$$ = \sigma^2 _\varepsilon \cdot (X^T \cdot X)^{-1} + \sigma^2 _\varepsilon \cdot(X^T \cdot X)^{-1}
+\cdot X^T \cdot Z \cdot (Z^T \cdot S \cdot Z)^{-1} \cdot Z^T \cdot X \cdot (X^T \cdot X)^{-1}$$
+
+Первое слагаемое $\sigma^2 _\varepsilon \cdot (X^T \cdot X)^{-1}$ соответствует ковариационной матрице
+для <<истинной>> (короткой) модели. Построив длинную модель, мы прибавили дополнительное слагаемое
+(можно показать, что это число положительное). Тогда
+$$cov(\hat{B}) > \sigma^2_\varepsilon \cdot (X^T \cdot X)^{-1}$$
+ 
+Поймем, как ведет себя истинная дисперсия остатков:
+$$\sigma^2_\varepsilon = ?$$
+$$Y = X \cdot \hat{B}+ Z \cdot \hat{A}+ \hat{E}$$
+$$Y = X* \cdot \hat{B}^* + \hat{E}$$
+$$\hat{E} = Y - X* \cdot \hat{B}^*$$
+
+Введем $S^*$:
+$$E = S^* \cdot Y$$
+$$S^* \equiv I - X^* \cdot (X^{*T}\cdot X^*)^{-1} \cdot X^{*T}$$
+$$M(\hat{E}^T \cdot \hat{E}) = M(Y^T \cdot S^* \cdot Y)$$
+
+Причем $S^* \cdot X^* = 0$.
+
+Так как $X* = \begin{bmatrix} X \; Z \end{bmatrix}$, то:
+$$S^* \cdot X^* = 0 \Rightarrow \begin{bmatrix} S^* \cdot X \; S^* \cdot Z \end{bmatrix} = 0$$
+
+Тогда $S^* \cdot X = 0, \;S^* \cdot Z = 0$. Теперь:
+$$M(Y^T \cdot S^* \cdot Y) = M \left(
+(X \cdot B + E)^T \cdot S^* \cdot (X \cdot B + E)
+\right) = $$
+$$ = M\left(
+B^T \cdot X^T \cdot S^* \cdot X \cdot B + B^Y \cdot X^T \cdot S^* \cdot E + E^T \cdot S^* \cdot X \cdot B
++ E^T \cdot S^* \cdot E
+\right) = M(E^T \cdot S^* \cdot E) =$$
+$$ = M(E^T \cdot I \cdot E ) -
+M(E^T \cdot X^* \cdot (X^{*T} \cdot X^*)^{-1} \cdot X^{*T} \cdot E ) =
+\sigma^2_\varepsilon \cdot (n - m - 1 - k)$$
+
+В этом же вопросе было написано, что оценкой матрицы $M(\hat{E}^T \cdot \hat{E})$ является остаточная
+сумма квадратов $SS_\text{ост}$. То есть $M(\hat{E}^T \cdot \hat{E}) = SS_\text{ост}$. 
+Тогда оценкой дисперсии случайных остатков является следующее выражение:
+$$\sigma^2_\varepsilon = \dfrac{SS_\text{ост}}{n - m - 1 - k}$$
+Где $m$ -- количество слагаемых с переменными $x$, $k$ -- количество слагаемых с переменными $z$.
+
+Получается, что в таком случае, оценка дисперсии случайных остатков будет корректной, то есть оценка
+дисперсии случайных остатков <<длинной>> модели является несмещенной.
+
+Включение несущественных переменных:
+\begin{enumerate}
+	\item Оценки параметров несмещенны;
+	\item Оценка дисперсии случайных остатков несмещенна;
+	\item Дисперсии оценок параметров <<короткой>> (<<реальной>>) модели меньше, чем
+	дисперсии оценок параметров <<длинной>> модели.
+\end{enumerate}
+
+\subsection{Оценка существенности включения независимых переменных}
+Есть <<короткая>> и <<длинная>> регрессии.
+<<Короткая>> регрессия:
+$$y = b_0 + b_1 \cdot x_1 + \cdots + \varepsilon$$
+
+<<Длинная>> регрессия:
+$$y = b_1 + b_1 \cdot x_! + \cdots + a_1 \cdot z_1 + \cdots + \varepsilon$$
+
+$$H_0: a_1 = a_2 = \cdots = a_k = 0$$
+$$H_1: \exists a_j: a_j \not = 0$$
+
+Иначе:
+$$H_0: SS_\text{ост(0)} - SS_\text{ост(a)} = 0$$
+$$H_1: SS_\text{ост(0)} - SS_\text{ост(a)} \not = 0$$
+
+Для этого используем F-критерий:
+
+$$F_{(0)} = \dfrac{SS_\text{ост(0)} - SS_\text{ост(a)}}{SS_\text{ост(a)}} \cdot \dfrac{n-m-k-1}{k}$$
+$$F_{(0)} = \dfrac{R^2_\text{(a)} - R^2_\text{(0)}}{1 - R^2_\text{(a)}} \cdot \dfrac{n-m-k-1}{k}$$
+
+Сравниваем $F_{(0)}$ с $F_\text{крит} = F_\alpha = F(\alpha; k; n-m-k-1)$. Если $F_{(0)} > F_\alpha$, то
+отвергаем нулевую гипотезу в пользу альтернативной -- стоило включать независимые переменные.
+
+Для $k=1$:
+
+$$F_{(0)} =  F_{x_j} = \dfrac{SS_\text{ост(0)} - SS_{\text{ост}(x_j)}}{SS_{\text{ост}(x_j)}} \cdot \dfrac{n-m-1-1}{1} $$
+
+$$F_\alpha = F(\alpha; k; n-m-k-1)$$
+$$F_{x_j} = t^2_{a_j}$$
+Пример.
+
+$$y = -7.7 + 1.2 \cdot x_1 - 4.1 \cdot x_2 +0.1 \cdot x_3  + \hat{\varepsilon}$$
+$$SS_{\text{ост}(a)} = 295.5, \; n = 30$$
+$$ y = -46.5 + 1.7 \cdot x_1 + \hat{\varepsilon}$$
+$$SS_{\text{ост}(a)} = 701.0$$
+$$F_{(0)} =  \dfrac{701 - 295.5}{295.5} \cdot \dfrac{30-1-2-1}{2} = 17.8 $$
+$$F_\alpha = F(0.05; 2; 26) = 3.37$$
+Так как $F_{(0)} > F_\alpha$, то включение $x_2$ и $x_3$ является статистически значимым.
+\subsection{Тест на функциональную форму}
+
+$$H_0: \text{линейная модель}\;\; y = b_0 + b_1 \cdot x + \cdots + \varepsilon$$
+$$H_1: \text{нелинейная модель}$$
+
+RESET-тест Рамсея -- строим регрессию:
+$$y = b_0 + b_1 \cdot x_1 + \cdots + c_1 \cdot \hat{y}^2 + c_2 \cdot \hat{y}^3 + \cdots + \varepsilon$$
+
+Тогда нулевую и альтернативную гипотезу можно переформулировать следующим образом:
+$$H_0: c_1 = c_2 = \cdots = 0$$
+$$H_1: \exists c_j: c_j \not = 0$$
+
+Для проверки нулевой и альтернативной гипотезы используется, по аналогии с предыдущим вопросом, F-критерий для
+сравнения <<короткой>> (линейной модели) и <<длинной>> (нелинейной модели).
+
+$F > F_\alpha$ -- отвергаем нулевую гипотезу, функциональная форма нелинейна с вероятностью 0.95.
+Пример.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.4\linewidth]{pics/screenshot055}
+	\label{fig:screenshot055}
+\end{figure}
+$$y = 101.4 - 27.4 \cdot x + \hat{\varepsilon}$$
+$$SS_{\text{ост}} = 28769.7$$
+$$ y = 20.0 - 9.8 \cdot x - 0.002 \cdot \hat{y}^2  - 1.04 \cdot 10^{-7} \cdot \hat{y}^3
+ + \hat{\varepsilon}$$
+$$SS_{\text{ост}} = 89.7$$
+$$F =  \dfrac{28769.7 - 89.7}{89.7} \cdot \dfrac{20-1-2-1}{2} = 2557.9 $$
+$$F_\alpha = F(0.05; 2; 16) = 3.63$$
+Таким образом, функциональная форма является нелинейной с вероятностью 0.95.
+
+\subsection{Выбор наилучшей функциии регрессии (тренда)}
+
+Критирии выбора:
+\begin{enumerate}
+	\item Экономическая обоснованность;
+	\item Качество случайных остатков;
+	\item Значимость;
+	\item Теснота связи (качество аппроксимации);
+	\item Простота.
+\end{enumerate}
+
+Качество аппроксимации:
+$$R^2$$
+$$R^2_\text{скорр} = 1 - (1 - R^2)  \cdot \dfrac{n-1}{n-m-1}$$
+
+Информационные критерии.
+
+Критерий Акаике:
+
+$$AIC = \ln \left(\dfrac{SS_\text{ост}}{n}\right) + \dfrac{2 \cdot (m+1)}{n} + \ln (2\cdot \pi)$$
+
+Критерий Шварца:
+$$SC = \ln \left(\dfrac{SS_\text{ост}}{n}\right) + \dfrac{(m+1) \cdot \ln n}{n} + \ln (2\cdot \pi)$$
+
+Оба критерия, чем меньше - тем лучше.
+
+Средняя ошибка аппроксимации:
+$$MAPE = \overline{A} = \dfrac{1}{n} \cdot \sum_{i=1}^{n}
+ \left|\dfrac{y_i - \hat{y}_i}{y_i}\right| \cdot 100\%$$
+
+Стандартная ошибка регрессии (оценка дисперсии остатков):
+$$\sigma_\varepsilon = SEE = \sqrt{\dfrac{SS_\text{ост}}{n -m  -1}}$$
+
+Средняя квадратическая ошибка расчетного значения (RMSE -- root mean squared error):
+$$RMSE = \sqrt{\dfrac{\sum\limits_{i=1}^{n}(y_i - \hat{y}_i)^2}{n}}$$
+
+Среднее значение модуля ошибки (MAE -- mean absolute error):
+$$MAE = \dfrac{\sum\limits_{i=1}^{n}|y_i - \hat{y}_i|}{n}$$
 \end{document}
+
